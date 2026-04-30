@@ -1,112 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Songti TC'; -webkit-text-stroke: #000000}
-    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
-    span.s1 {font-kerning: none}
-    span.s2 {font: 12.0px Times; font-kerning: none}
-    span.s3 {font: 12.0px 'Songti TC'; font-kerning: none}
-    span.s4 {font: 12.0px 'Apple Color Emoji'; font-kerning: none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lumi World</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 2s ease-in-out;
+        }
+        #light-world { opacity: 0; }
+        .restored #light-world { opacity: 1; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .floating { animation: float 3s ease-in-out infinite; }
+    </style>
 </head>
-<body>
-<p class="p1"><span class="s1">&lt;</span></p>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="zh-TW"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;Lumi World&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></p>
-<p class="p2"><span class="s2"><span class="Apple-converted-space">        </span>/* </span><span class="s1">核心魔法：兩張背景重疊，控制透明度來達成「修復」視覺</span><span class="s2"> */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.bg-layer {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>position: fixed;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>top: 0; left: 0; width: 100%; height: 100%;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-size: cover;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>background-position: center;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>transition: opacity 2s ease-in-out;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>#light-world { opacity: 0; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.restored #light-world { opacity: 1; }</span></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/* </span><span class="s3">讓</span><span class="s1"> Lumi </span><span class="s3">輕微浮動</span><span class="s1"> */</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>@keyframes float {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>0%, 100% { transform: translateY(0); }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>50% { transform: translateY(-20px); }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>.floating { animation: float 3s ease-in-out infinite; }</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body class="bg-black overflow-hidden m-0 p-0 font-sans"&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="dark-world" class="bg-layer" style="background-image: url('bg-dark.jpg');"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div id="light-world" class="bg-layer" style="background-image: url('bg-light.jpg');"&gt;&lt;/div&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="fixed top-8 left-0 w-full px-8 z-20"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="bg-gray-800/50 rounded-full h-4 w-full overflow-hidden border border-white/20"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div id="progress-bar" class="bg-yellow-400 h-full w-0 transition-all duration-1000 shadow-[0_0_15px_#fbbf24]"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p class="text-white text-center mt-2 text-sm tracking-widest font-bold"&gt;</span><span class="s3">世界修復進度</span><span class="s1">&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="fixed bottom-40 left-1/2 -translate-x-1/2 z-10 w-48 floating"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;img src="lumi.png" alt="Lumi" class="w-full"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="bg-white/90 p-3 rounded-2xl mt-4 text-gray-800 text-sm font-bold shadow-xl"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p id="lumi-text"&gt;</span><span class="s3">守護者，我感覺到能量正在枯竭</span><span class="s1">...&lt;/p&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="fixed bottom-8 left-0 w-full px-6 z-20 flex gap-4 overflow-x-auto pb-4"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button onclick="completeTask(this, 33)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span class="block text-2xl mb-1"&gt;</span><span class="s4">🦷</span><span class="s1">&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span class="text-xs font-bold"&gt;</span><span class="s3">淨化之咒</span><span class="s1">&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button onclick="completeTask(this, 33)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span class="block text-2xl mb-1"&gt;</span><span class="s4">🧸</span><span class="s1">&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span class="text-xs font-bold"&gt;</span><span class="s3">重整秩序</span><span class="s1">&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button onclick="completeTask(this, 34)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all"&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span class="block text-2xl mb-1"&gt;</span><span class="s4">🥦</span><span class="s1">&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;span class="text-xs font-bold"&gt;</span><span class="s3">能量萃取</span><span class="s1">&lt;/span&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script&gt;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>let currentEnergy = 0;</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>function completeTask(btn, energy) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>if (btn.disabled) return;</span></p>
-<p class="p3"><span class="s1"><span class="Apple-converted-space">            </span></span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// </span><span class="s3">基礎互動：禁用按鈕、震動</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>btn.disabled = true;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>btn.style.opacity = "0.5";</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>if (navigator.vibrate) navigator.vibrate(200);</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// </span><span class="s3">更新能量</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>currentEnergy += energy;</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('progress-bar').style.width = currentEnergy + "%";</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// </span><span class="s3">對話更新</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>const texts = ["</span><span class="s3">太棒了！光回來了！</span><span class="s1">", "</span><span class="s3">謝謝你，森林在笑呢！</span><span class="s1">", "</span><span class="s3">黑霧正在散去！</span><span class="s1">"];</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>document.getElementById('lumi-text').innerText = texts[Math.floor(Math.random() * texts.length)];</span></p>
-<p class="p3"><span class="s1"></span><br></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>// </span><span class="s3">檢查是否達成修復</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>if (currentEnergy &gt;= 100) {</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>document.body.classList.add('restored');</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>document.getElementById('lumi-text').innerText = "</span><span class="s3">世界恢復了！你是最棒的守護者！</span><span class="s1">";</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>// </span><span class="s3">這裡可以加入慶祝音效</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>}</span></p>
-<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+<body class="bg-black overflow-hidden m-0 p-0 font-sans">
+    <div id="dark-world" class="bg-layer" style="background-image: url('bg-dark.jpg');"></div>
+    <div id="light-world" class="bg-layer" style="background-image: url('bg-light.jpg');"></div>
+    <div class="fixed top-8 left-0 w-full px-8 z-20">
+        <div class="bg-gray-800/50 rounded-full h-4 w-full overflow-hidden border border-white/20">
+            <div id="progress-bar" class="bg-yellow-400 h-full w-0 transition-all duration-1000 shadow-[0_0_15px_#fbbf24]"></div>
+        </div>
+        <p class="text-white text-center mt-2 text-sm tracking-widest font-bold">世界修復進度</p>
+    </div>
+    <div class="fixed bottom-40 left-1/2 -translate-x-1/2 z-10 w-48 floating">
+        <img src="lumi.png" alt="Lumi" class="w-full">
+        <div class="bg-white/90 p-3 rounded-2xl mt-4 text-gray-800 text-sm font-bold shadow-xl">
+            <p id="lumi-text">守護者，我感覺到能量正在枯竭...</p>
+        </div>
+    </div>
+    <div class="fixed bottom-8 left-0 w-full px-6 z-20 flex gap-4 overflow-x-auto pb-4">
+        <button onclick="completeTask(this, 33)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all">
+            <span class="block text-2xl mb-1">🦷</span>
+            <span class="text-xs font-bold">淨化之咒</span>
+        </button>
+        <button onclick="completeTask(this, 33)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all">
+            <span class="block text-2xl mb-1">🧸</span>
+            <span class="text-xs font-bold">重整秩序</span>
+        </button>
+        <button onclick="completeTask(this, 34)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all">
+            <span class="block text-2xl mb-1">🥦</span>
+            <span class="text-xs font-bold">能量萃取</span>
+        </button>
+    </div>
+    <script>
+        let currentEnergy = 0;
+        function completeTask(btn, energy) {
+            if (btn.disabled) return;
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+            if (navigator.vibrate) navigator.vibrate(200);
+            currentEnergy += energy;
+            document.getElementById('progress-bar').style.width = currentEnergy + "%";
+            const texts = ["太棒了！光回來了！", "謝謝你，森林在笑呢！", "黑霧正在散去！"];
+            document.getElementById('lumi-text').innerText = texts[Math.floor(Math.random() * texts.length)];
+            if (currentEnergy >= 100) {
+                document.body.classList.add('restored');
+                document.getElementById('lumi-text').innerText = "世界恢復了！你是最棒的守護者！";
+            }
+        }
+    </script>
 </body>
 </html>
