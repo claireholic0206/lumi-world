@@ -34,7 +34,7 @@
 
     <!-- 2. 孩子首頁 / 今日任務 -->
     <div id="view-home" class="view">
-        <div class="p-6 pb-24">
+        <div class="p-6 pb-32">
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-3">
                     <img src="lumi.png" alt="Lumi" class="w-12 h-12 object-contain bg-white rounded-full p-1 shadow-sm">
@@ -69,30 +69,36 @@
 
     <!-- P1. 家長管理介面 -->
     <div id="view-parent" class="view">
-        <div class="p-6">
+        <div class="p-6 pb-32">
             <h2 class="font-bold text-xl text-purple-700 mb-6">家長後台</h2>
-            <div class="bg-purple-50 p-6 rounded-2xl mb-6">
-                <p class="text-sm text-purple-600 font-bold mb-2">數據中心</p>
-                <div class="text-3xl font-black text-purple-900"><span id="parent-score">0</span> <span class="text-sm font-normal">總光能量</span></div>
+            <div class="bg-purple-50 p-6 rounded-2xl mb-8">
+                <p class="text-sm text-purple-600 font-bold mb-2">總光能量</p>
+                <div class="text-3xl font-black text-purple-900"><span id="parent-score">0</span></div>
             </div>
-            <button onclick="alert('功能開發中')" class="w-full py-4 bg-purple-600 text-white rounded-xl font-bold">新增今日任務</button>
+            <div class="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm mb-6">
+                <h3 class="font-bold mb-4 text-gray-700">＋ 新增自訂任務</h3>
+                <input id="new-task-name" type="text" placeholder="任務名稱" class="w-full border-b-2 border-purple-100 py-2 mb-4 outline-none">
+                <input id="new-task-energy" type="number" placeholder="能量值" class="w-full border-b-2 border-purple-100 py-2 mb-6 outline-none">
+                <button onclick="addNewTask()" class="w-full py-3 bg-purple-600 text-white rounded-xl font-bold">加入清單</button>
+            </div>
+            <button onclick="if(confirm('確定要清空進度嗎？')) { localStorage.clear(); location.reload(); }" class="w-full py-3 text-red-400 text-sm">重置所有數據</button>
         </div>
     </div>
 
-    <!-- 全域導覽列 (移到 view 外面) -->
-    <nav id="global-nav" class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-gray-100 flex justify-around p-4 z-40 hidden">
-        <button onclick="showView('home')" class="flex flex-col items-center gap-1 text-green-600">
-            <span class="text-xl">🌿</span><span class="text-[10px] font-bold">任務</span>
+    <!-- 全局導覽列 (關鍵：放在 view 之外) -->
+    <nav id="global-nav" class="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-gray-100 flex justify-around p-4 z-40 hidden">
+        <button onclick="showView('home')" class="flex flex-col items-center gap-1">
+            <span class="text-xl">🌿</span><span class="text-[10px] font-bold text-gray-500">任務</span>
         </button>
-        <button onclick="showView('map')" class="flex flex-col items-center gap-1 text-gray-400">
-            <span class="text-xl">🗺️</span><span class="text-[10px] font-bold">世界</span>
+        <button onclick="showView('map')" class="flex flex-col items-center gap-1">
+            <span class="text-xl">🗺️</span><span class="text-[10px] font-bold text-gray-500">世界</span>
         </button>
-        <button onclick="showView('parent')" class="flex flex-col items-center gap-1 text-gray-400">
-            <span class="text-xl">⚙️</span><span class="text-[10px] font-bold">家長</span>
+        <button onclick="showView('parent')" class="flex flex-col items-center gap-1">
+            <span class="text-xl">⚙️</span><span class="text-[10px] font-bold text-gray-500">家長</span>
         </button>
     </nav>
 
-    <!-- 完成任務彈窗 (Modal) -->
+    <!-- 完成任務彈窗 -->
     <div id="reward-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
         <div class="relative bg-white rounded-[40px] p-8 w-[85%] max-w-sm text-center shadow-2xl transform scale-90 opacity-0 transition-all duration-300" id="modal-content">
@@ -101,125 +107,109 @@
             <div class="my-6 relative">
                 <img src="lumi.png" class="w-32 h-32 mx-auto floating" alt="Lumi">
             </div>
-            <p class="text-gray-500 mb-1">你完成了「<span id="modal-task-name" class="font-bold text-gray-800"></span>」！</p>
+            <p class="text-gray-500 mb-1">你完成了任務！</p>
             <div class="text-2xl font-black text-yellow-500 mb-8">+<span id="modal-energy-amount"></span> 光能量</div>
             <button onclick="closeModal()" class="w-full py-4 bg-green-500 text-white rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-transform">繼續加油！</button>
         </div>
     </div>
 
     <script>
-     // 1. 數據與初始狀態
-const taskData = [
-    { id: 1, name: "刷牙", icon: "🦷", energy: 10 },
-    { id: 2, name: "整理書包", icon: "🎒", energy: 15 },
-    { id: 3, name: "寫作業", icon: "📖", energy: 20 },
-    { id: 4, name: "睡前整理", icon: "🌙", energy: 10 }
-];
+        // 1. 初始化數據
+        let currentEnergy = parseInt(localStorage.getItem('lumi_energy')) || 0;
+        let taskData = JSON.parse(localStorage.getItem('lumi_tasks')) || [
+            { id: 1, name: "刷牙", icon: "🦷", energy: 10 },
+            { id: 2, name: "整理書包", icon: "🎒", energy: 15 },
+            { id: 3, name: "寫作業", icon: "📖", energy: 20 }
+        ];
+        const targetEnergy = 200;
 
-// 確保從本地讀取，並在 Console 列印結果方便除錯
-let currentEnergy = parseInt(localStorage.getItem('lumi_energy')) || 0;
-console.log("初始加載能量:", currentEnergy);
+        // 2. 頁面加載邏輯
+        window.onload = function() {
+            refreshUI();
+            if (currentEnergy > 0) {
+                showView('home');
+            }
+        };
 
-const targetEnergy = 200;
+        function refreshUI() {
+            document.getElementById('score-display').innerText = currentEnergy;
+            const pScore = document.getElementById('parent-score');
+            if (pScore) pScore.innerText = currentEnergy;
+        }
 
-// 2. 初始化執行
-window.onload = function() {
-    refreshUI();
-    if (currentEnergy > 0) {
-        // 如果已經有分數，直接讓導覽列出來，方便測試
-        document.getElementById('global-nav').classList.remove('hidden');
-    }
-};
+        // 3. 頁面導覽
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            const targetView = document.getElementById('view-' + viewName);
+            if (targetView) targetView.classList.add('active');
+            
+            const nav = document.getElementById('global-nav');
+            if (viewName === 'story') nav.classList.add('hidden');
+            else nav.classList.remove('hidden');
 
-function refreshUI() {
-    document.getElementById('score-display').innerText = currentEnergy;
-    if (document.getElementById('parent-score')) {
-        document.getElementById('parent-score').innerText = currentEnergy;
-    }
-}
+            if (viewName === 'home') renderTasks();
+            if (viewName === 'map') updateMapProgress();
+        }
 
-// 3. 頁面導覽邏輯
-function showView(viewName) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    const targetView = document.getElementById('view-' + viewName);
-    if (targetView) targetView.classList.add('active');
-    
-    if (viewName !== 'story') {
-        document.getElementById('global-nav').classList.remove('hidden');
-    }
+        // 4. 任務邏輯
+        function renderTasks() {
+            const container = document.getElementById('task-list');
+            container.innerHTML = ''; 
+            taskData.forEach(task => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex justify-between items-center active:bg-gray-50";
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="text-3xl">${task.icon}</span>
+                        <span class="font-bold text-lg">${task.name}</span>
+                    </div>
+                    <div class="bg-yellow-50 text-yellow-600 px-3 py-1 rounded-lg font-black">+${task.energy}</div>
+                `;
+                card.onclick = () => handleTaskClick(task);
+                container.appendChild(card);
+            });
+        }
 
-    if (viewName === 'home') renderTasks();
-    if (viewName === 'map') updateMapProgress();
-}
+        function handleTaskClick(task) {
+            currentEnergy += task.energy;
+            localStorage.setItem('lumi_energy', currentEnergy);
+            refreshUI();
 
-// 4. 動態渲染任務
-function renderTasks() {
-    const container = document.getElementById('task-list');
-    if (!container) return;
-    container.innerHTML = ''; 
-    taskData.forEach(task => {
-        const card = document.createElement('div');
-        card.className = "bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex justify-between items-center active:bg-gray-50";
-        card.innerHTML = `
-            <div class="flex items-center gap-4">
-                <span class="text-3xl">${task.icon}</span>
-                <span class="font-bold text-lg">${task.name}</span>
-            </div>
-            <div class="bg-yellow-50 text-yellow-600 px-3 py-1 rounded-lg font-black">+${task.energy}</div>
-        `;
-        card.onclick = () => handleTaskClick(task);
-        container.appendChild(card);
-    });
-}
+            document.getElementById('modal-energy-amount').innerText = task.energy;
+            const modal = document.getElementById('reward-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-90', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
 
-// 5. 核心點擊函式 (確保只有這一個！)
-function handleTaskClick(task) {
-    console.log("點擊任務:", task.name);
-    
-    // 增加分數
-    currentEnergy += task.energy;
-    
-    // 【關鍵】立刻寫入 LocalStorage
-    localStorage.setItem('lumi_energy', currentEnergy.toString());
-    console.log("已存入 LocalStorage:", localStorage.getItem('lumi_energy'));
+        function closeModal() {
+            const content = document.getElementById('modal-content');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => {
+                document.getElementById('reward-modal').classList.add('hidden');
+            }, 300);
+        }
 
-    // 更新畫面
-    refreshUI();
+        // 5. 家長端新增功能
+        function addNewTask() {
+            const name = document.getElementById('new-task-name').value;
+            const energy = parseInt(document.getElementById('new-task-energy').value);
+            if (name && energy) {
+                taskData.push({ id: Date.now(), name, icon: "✨", energy });
+                localStorage.setItem('lumi_tasks', JSON.stringify(taskData));
+                alert("新增成功！");
+                showView('home');
+            }
+        }
 
-    // 顯示彈窗
-    const modalTaskName = document.getElementById('modal-task-name');
-    const modalEnergyAmount = document.getElementById('modal-energy-amount');
-    if (modalTaskName) modalTaskName.innerText = task.name;
-    if (modalEnergyAmount) modalEnergyAmount.innerText = task.energy;
-    
-    const modal = document.getElementById('reward-modal');
-    const content = document.getElementById('modal-content');
-    if (modal && content) {
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            content.classList.remove('scale-90', 'opacity-0');
-            content.classList.add('scale-100', 'opacity-100');
-        }, 10);
-    }
-}
-
-function closeModal() {
-    const content = document.getElementById('modal-content');
-    if (content) {
-        content.classList.add('scale-90', 'opacity-0');
-        setTimeout(() => {
-            document.getElementById('reward-modal').classList.add('hidden');
-        }, 300);
-    }
-}
-
-function updateMapProgress() {
-    const percentage = Math.min((currentEnergy / targetEnergy) * 100, 100);
-    const bar = document.getElementById('map-progress');
-    const txt = document.getElementById('progress-text');
-    if (bar) bar.style.width = percentage + '%';
-    if (txt) txt.innerText = Math.floor(percentage);
-}
+        function updateMapProgress() {
+            const percentage = Math.min((currentEnergy / targetEnergy) * 100, 100);
+            document.getElementById('map-progress').style.width = percentage + '%';
+            document.getElementById('progress-text').innerText = Math.floor(percentage);
+        }
     </script>
 </body>
 </html>
