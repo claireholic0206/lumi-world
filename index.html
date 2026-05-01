@@ -153,6 +153,67 @@
             // 簡單的反饋：跳出彈窗
             alert(`太棒了！完成了 ${task.name}，獲得了 ${task.energy} 光能量！`);
         }
+      // 修改原本的點擊邏輯
+function handleTaskClick(task) {
+    currentEnergy += task.energy;
+    document.getElementById('score-display').innerText = currentEnergy;
+
+    // 顯示自定義彈窗內容
+    document.getElementById('modal-task-name').innerText = task.name;
+    document.getElementById('modal-energy-amount').innerText = task.energy;
+    
+    // 顯示彈窗動畫
+    const modal = document.getElementById('reward-modal');
+    const content = document.getElementById('modal-content');
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('scale-90', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+// 修改原本的點擊邏輯
+function handleTaskClick(task) {
+    currentEnergy += task.energy;
+    document.getElementById('score-display').innerText = currentEnergy;
+
+    // 顯示自定義彈窗內容
+    document.getElementById('modal-task-name').innerText = task.name;
+    document.getElementById('modal-energy-amount').innerText = task.energy;
+    
+    // 顯示彈窗動畫
+    const modal = document.getElementById('reward-modal');
+    const content = document.getElementById('modal-content');
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('scale-90', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+// 新增關閉彈窗邏輯
+function closeModal() {
+    const content = document.getElementById('modal-content');
+    content.classList.add('scale-90', 'opacity-0');
+    content.classList.remove('scale-100', 'opacity-100');
+    
+    setTimeout(() => {
+        document.getElementById('reward-modal').classList.add('hidden');
+    }, 300);
+}
+
+// 新增關閉彈窗邏輯
+function closeModal() {
+    const content = document.getElementById('modal-content');
+    content.classList.add('scale-90', 'opacity-0');
+    content.classList.remove('scale-100', 'opacity-100');
+    
+    setTimeout(() => {
+        document.getElementById('reward-modal').classList.add('hidden');
+    }, 300);
+}
 
         // 6. 更新地圖進度
         function updateMapProgress() {
@@ -161,5 +222,32 @@
             document.getElementById('progress-text').innerText = Math.floor(percentage);
         }
     </script>
+    <!-- 3. 完成任務彈窗 (Modal) -->
+<div id="reward-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <!-- 背景遮罩 -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    
+    <!-- 彈窗內容 -->
+    <div class="relative bg-white rounded-[40px] p-8 w-[85%] max-w-sm text-center shadow-2xl transform scale-90 opacity-0 transition-all duration-300" id="modal-content">
+        <div class="text-4xl mb-4">✨</div>
+        <h2 class="text-3xl font-black text-green-600 mb-2">太棒了！</h2>
+        
+        <div class="my-6 relative">
+            <img src="lumi.png" class="w-32 h-32 mx-auto floating" alt="Lumi">
+            <!-- 噴發的小星星可以使用 emoji 代替 -->
+            <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+                <span class="absolute top-0 left-10 animate-ping">⭐</span>
+                <span class="absolute bottom-0 right-10 animate-bounce">⭐</span>
+            </div>
+        </div>
+
+        <p class="text-gray-500 mb-1">你完成了「<span id="modal-task-name" class="font-bold text-gray-800"></span>」！</p>
+        <div class="text-2xl font-black text-yellow-500 mb-8">+<span id="modal-energy-amount"></span> 光能量</div>
+
+        <button onclick="closeModal()" class="w-full py-4 bg-green-500 text-white rounded-2xl font-bold text-lg shadow-lg shadow-green-200 active:scale-95 transition-transform">
+            繼續加油！
+        </button>
+    </div>
+</div>
 </body>
 </html>
