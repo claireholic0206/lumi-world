@@ -2,93 +2,163 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lumi World MVP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .view { display: none; } /* 預設所有頁面隱藏 */
-        .view.active { display: block; } /* 只有帶有 active 的頁面才顯示 */
+        .view { display: none; }
+        .view.active { display: block; }
+        
+        /* 讓 Lumi 動起來的小動畫 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .floating { animation: float 3s ease-in-out infinite; }
     </style>
 </head>
-<body class="bg-slate-100 font-sans">
+<body class="bg-slate-50 font-sans text-gray-800">
 
     <!-- 1. 開場故事頁面 -->
     <div id="view-story" class="view active">
-       <div class="w-48 h-48 mb-8 flex items-center justify-center">
-    <img src="lumi.png" alt="Lumi" class="w-full h-full object-contain floating"></div>
-            <h1 class="text-xl font-bold mb-4">我們的世界失去了光...</h1>
-            <p class="text-gray-600 mb-8">你願意幫助我們，讓森林再次恢復生機嗎？</p>
-            <button onclick="showView('home')" class="bg-gray-800 text-white px-10 py-3 rounded-full">開始冒險！</button>
+        <div class="h-screen flex flex-col items-center justify-center p-8 text-center bg-gray-900 text-white">
+            <!-- 置中處理：使用 w-full + flex justify-center -->
+            <div class="w-full flex justify-center mb-8">
+                <img src="lumi.png" alt="Lumi" class="w-48 h-48 object-contain floating">
+            </div>
+            <h1 class="text-2xl font-bold mb-4">我們的世界失去了光...</h1>
+            <p class="text-gray-400 mb-10 leading-relaxed">你願意幫助我們，讓森林再次恢復生機嗎？</p>
+            <button onclick="showView('home')" class="bg-white text-gray-900 px-12 py-4 rounded-full font-bold shadow-lg active:scale-95 transition-transform">
+                開始冒險！
+            </button>
         </div>
     </div>
 
     <!-- 2. 孩子首頁 / 今日任務 -->
     <div id="view-home" class="view">
-        <div class="p-6">
+        <div class="p-6 pb-24">
+            <!-- 頂部資訊列 -->
             <div class="flex justify-between items-center mb-8">
-                <div class="flex items-center gap-2">
-                   <div class="flex items-center gap-2">
-    <img src="lumi.png" alt="Lumi" class="w-10 h-10 object-contain">
-    <div>
-        <div class="text-xs text-gray-500">小小守護者</div>
-        <div class="font-bold">Lv.1</div>
-    </div>
-</div>
+                <div class="flex items-center gap-3">
+                    <!-- 左上角圖標修正：確保 img 標籤正確 -->
+                    <img src="lumi.png" alt="Lumi" class="w-12 h-12 object-contain bg-white rounded-full p-1 shadow-sm">
                     <div>
-                        <div class="text-xs text-gray-500">小小守護者</div>
-                        <div class="font-bold">Lv.1</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wider">Little Guardian</div>
+                        <div class="font-black text-xl">Lv.1</div>
                     </div>
                 </div>
-                <div class="bg-white px-4 py-1 rounded-full shadow-sm flex items-center gap-2">
-                    <span class="text-yellow-500">⭐</span>
-                    <span id="score-display" class="font-bold">0</span>
+                <div class="bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 flex items-center gap-2">
+                    <span class="text-xl">⭐</span>
+                    <span id="score-display" class="font-black text-lg text-yellow-600">0</span>
                 </div>
             </div>
 
-            <h2 class="font-bold mb-4 text-lg text-gray-700">今日任務</h2>
+            <h2 class="font-bold mb-5 text-xl">今日任務</h2>
             <div id="task-list" class="space-y-4">
-                <!-- 任務會透過 JavaScript 動態產生在這裡 -->
+                <!-- 任務會由下面的 JavaScript 自動生成 -->
             </div>
 
             <!-- 底部導覽列 -->
-            <div class="fixed bottom-0 left-0 w-full bg-white border-t flex justify-around p-4 text-xs text-gray-400">
-                <button onclick="showView('home')" class="text-green-600">任務</button>
-                <button onclick="showView('map')">世界</button>
-                <button>Lumi</button>
-                <button onclick="showView('parent')">家長</button>
+            <div class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-md border-t border-gray-100 flex justify-around p-4">
+                <button onclick="showView('home')" class="flex flex-col items-center gap-1 text-green-600">
+                    <span class="text-xl">🌿</span><span class="text-[10px] font-bold">任務</span>
+                </button>
+                <button onclick="showView('map')" class="flex flex-col items-center gap-1 text-gray-400">
+                    <span class="text-xl">🗺️</span><span class="text-[10px] font-bold">世界</span>
+                </button>
+                <button onclick="showView('parent')" class="flex flex-col items-center gap-1 text-gray-400">
+                    <span class="text-xl">⚙️</span><span class="text-[10px] font-bold">家長</span>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- 4. 世界地圖頁面 -->
+    <!-- 4. 世界地圖頁面 (簡版) -->
     <div id="view-map" class="view">
-        <div class="p-6 text-center">
-            <h2 class="font-bold text-lg mb-8">遺忘森林</h2>
-            <div class="aspect-square bg-green-50 rounded-3xl border-2 border-dashed border-green-200 flex items-center justify-center mb-8">
-                這裡將會是地圖
+        <div class="h-screen flex flex-col p-6 text-center">
+            <h2 class="font-bold text-xl mb-6">遺忘森林</h2>
+            <div class="flex-1 bg-green-50 rounded-3xl border-2 border-dashed border-green-200 flex flex-col items-center justify-center p-6 mb-20">
+                <p class="text-gray-400">地圖修復中...</p>
+                <div class="w-full bg-gray-200 h-4 rounded-full mt-4 overflow-hidden">
+                    <div id="map-progress" class="bg-green-500 h-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-green-600 mt-2 font-bold">目前修復進度: <span id="progress-text">0</span>%</p>
             </div>
-            <button onclick="showView('home')" class="text-blue-500 underline">返回任務</button>
         </div>
     </div>
 
-    <!-- P1. 家長後台 (簡版) -->
+    <!-- P1. 家長管理介面 -->
     <div id="view-parent" class="view">
         <div class="p-6">
-            <h2 class="font-bold text-lg mb-4 text-purple-700">家長管理後台</h2>
-            <p class="text-sm text-gray-600 mb-8">在這裡你可以查看孩子的進度並管理任務。</p>
-            <button onclick="showView('home')" class="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg">回孩子視角</button>
+            <div class="flex items-center gap-2 mb-6">
+                <button onclick="showView('home')" class="text-gray-400">←</button>
+                <h2 class="font-bold text-xl text-purple-700">家長後台</h2>
+            </div>
+            <div class="bg-purple-50 p-6 rounded-2xl mb-6">
+                <p class="text-sm text-purple-600 font-bold mb-2">數據中心</p>
+                <div class="text-3xl font-black text-purple-900">120 <span class="text-sm font-normal">總光能量</span></div>
+            </div>
+            <button onclick="alert('新增功能開發中')" class="w-full py-4 bg-purple-600 text-white rounded-xl font-bold">新增今日任務</button>
         </div>
     </div>
 
+    <!-- 所有的 JavaScript 邏輯寫在這裡 -->
     <script>
-        // 核心邏輯：頁面切換
+        // 1. 數據設定 (對應 Wireframe P2)
+        const taskData = [
+            { id: 1, name: "刷牙", icon: "🦷", energy: 10 },
+            { id: 2, name: "整理書包", icon: "🎒", energy: 15 },
+            { id: 3, name: "寫作業", icon: "📖", energy: 20 },
+            { id: 4, name: "睡前整理", icon: "🌙", energy: 10 }
+        ];
+
+        // 2. 狀態管理
+        let currentEnergy = 0;
+        const targetEnergy = 200; // 地圖修復目標
+
+        // 3. 頁面導覽邏輯
         function showView(viewName) {
-            // 隱藏所有頁面
-            document.querySelectorAll('.view').forEach(view => {
-                view.classList.remove('active');
-            });
-            // 顯示指定頁面
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + viewName).classList.add('active');
+            
+            if (viewName === 'home') renderTasks();
+            if (viewName === 'map') updateMapProgress();
+        }
+
+        // 4. 動態渲染任務卡片
+        function renderTasks() {
+            const container = document.getElementById('task-list');
+            container.innerHTML = ''; 
+
+            taskData.forEach(task => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex justify-between items-center active:bg-gray-50 transition-colors";
+                card.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <span class="text-3xl">${task.icon}</span>
+                        <span class="font-bold text-lg">${task.name}</span>
+                    </div>
+                    <div class="bg-yellow-50 text-yellow-600 px-3 py-1 rounded-lg font-black">+${task.energy}</div>
+                `;
+                card.onclick = () => handleTaskClick(task);
+                container.appendChild(card);
+            });
+        }
+
+        // 5. 點擊任務邏輯
+        function handleTaskClick(task) {
+            currentEnergy += task.energy;
+            document.getElementById('score-display').innerText = currentEnergy;
+            
+            // 簡單的反饋：跳出彈窗
+            alert(`太棒了！完成了 ${task.name}，獲得了 ${task.energy} 光能量！`);
+        }
+
+        // 6. 更新地圖進度
+        function updateMapProgress() {
+            const percentage = Math.min((currentEnergy / targetEnergy) * 100, 100);
+            document.getElementById('map-progress').style.width = percentage + '%';
+            document.getElementById('progress-text').innerText = Math.floor(percentage);
         }
     </script>
 </body>
