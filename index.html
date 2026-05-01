@@ -113,8 +113,22 @@
         ];
 
         // 2. 狀態管理
-        let currentEnergy = 0;
-        const targetEnergy = 200; // 地圖修復目標
+        // 修改：初始值優先從 localStorage 讀取，沒有的話才是 0
+        let currentEnergy = parseInt(localStorage.getItem('lumi_energy')) || 0;
+        
+        // 更新分數顯示的初始狀態
+        document.getElementById('score-display').innerText = currentEnergy;
+        
+        function handleTaskClick(task) {
+            currentEnergy += task.energy;
+            
+            // 新增：儲存到本地
+            localStorage.setItem('lumi_energy', currentEnergy);
+            
+            document.getElementById('score-display').innerText = currentEnergy;
+            
+            // ... 原本的彈窗邏輯 ...
+        }
 
         // 3. 頁面導覽邏輯
         function showView(viewName) {
