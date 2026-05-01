@@ -77,6 +77,13 @@
             </div>
             <div class="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm mb-6">
                 <h3 class="font-bold mb-4 text-gray-700">＋ 新增自訂任務</h3>
+                <!-- 任務管理列表 -->
+<div class="mt-8">
+    <h3 class="font-bold mb-4 text-gray-700">現有任務管理</h3>
+    <div id="parent-task-manage-list" class="space-y-2">
+        <!-- 這裡會由 JS 動態生成 -->
+    </div>
+</div>
                 <input id="new-task-name" type="text" placeholder="任務名稱" class="w-full border-b-2 border-purple-100 py-2 mb-4 outline-none">
                 <input id="new-task-energy" type="number" placeholder="能量值" class="w-full border-b-2 border-purple-100 py-2 mb-6 outline-none">
                 <button onclick="addNewTask()" class="w-full py-3 bg-purple-600 text-white rounded-xl font-bold">加入清單</button>
@@ -160,6 +167,7 @@
             // 4. 針對不同頁面執行對應的更新渲染
             if (viewName === 'home') renderTasks();
             if (viewName === 'map') updateMapProgress();
+            if (viewName === 'parent') renderParentTaskList();
         }
 
         // 4. 任務邏輯
@@ -206,15 +214,39 @@
 
         // 5. 家長端新增功能
         function addNewTask() {
-            const name = document.getElementById('new-task-name').value;
-            const energy = parseInt(document.getElementById('new-task-energy').value);
-            if (name && energy) {
-                taskData.push({ id: Date.now(), name, icon: "✨", energy });
-                localStorage.setItem('lumi_tasks', JSON.stringify(taskData));
-                alert("新增成功！");
-                showView('home');
-            }
-        }
+    const nameInput = document.getElementById('new-task-name');
+    const energyInput = document.getElementById('new-task-energy');
+    
+    const name = nameInput.value.trim();
+    const energy = parseInt(energyInput.value);
+
+    if (name && !isNaN(energy)) {
+        // 建立新任務物件
+        const newTask = {
+            id: Date.now(), // 使用時間戳作為唯一 ID，方便刪除
+            name: name,
+            icon: "✨", 
+            energy: energy
+        };
+        
+        // 更新數據清單
+        taskData.push(newTask);
+        
+        // 儲存到 LocalStorage
+        localStorage.setItem('lumi_tasks', JSON.stringify(taskData));
+        
+        // 清空輸入欄位
+        nameInput.value = '';
+        energyInput.value = '';
+        
+        alert("✅ 任務新增成功！");
+        
+        // 自動跳轉回首頁，讓家長看到成果
+        showView('home'); 
+    } else {
+        alert("請輸入有效的任務名稱與能量值喔！");
+    }
+}
 
             function updateMapProgress() {
                 const percentage = Math.min((currentEnergy / targetEnergy) * 100, 100);
@@ -246,6 +278,38 @@
             mapHint.innerText = "🌳 森林已恢復生機！你是最棒的守護者！";
             mapHint.classList.add('text-green-600', 'font-bold');
         }
+                function renderParentTaskList() {
+    const container = document.getElementById('parent-task-manage-list');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    taskData.forEach(task => {
+        const item = document.createElement('div');
+        item.className = "flex justify-between items-center bg-white p-3 rounded-xl border border-gray-100 text-sm";
+        item.innerHTML = `
+            <div class="flex items-center gap-2">
+                <span>${task.icon}</span>
+                <span class="font-medium">${task.name}</span>
+                <span class="text-gray-400">(${task.energy}分)</span>
+            </div>
+            <button onclick="deleteTask(${task.id})" class="text-red-400 hover:text-red-600 p-2">
+                🗑️
+            </button>
+        `;
+        container.appendChild(item);
+    });
+}
+
+function deleteTask(id) {
+    if (confirm("確定要刪除這個任務嗎？")) {
+        // 過濾掉該 ID 的任務
+        taskData = taskData.filter(t => t.id !== id);
+        // 儲存更新後的清單
+        localStorage.setItem('lumi_tasks', JSON.stringify(taskData));
+        // 重新渲染管理介面
+        renderParentTaskList();
+    }
+}
 }
     </script>
 </body>
