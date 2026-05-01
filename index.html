@@ -136,14 +136,28 @@
 
         // 3. 頁面導覽
         function showView(viewName) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            const targetView = document.getElementById('view-' + viewName);
-            if (targetView) targetView.classList.add('active');
+            // 1. 隱藏所有頁面容器
+            document.querySelectorAll('.view').forEach(v => {
+                v.classList.remove('active');
+            });
             
+            // 2. 顯示點擊的目標頁面
+            const targetView = document.getElementById('view-' + viewName);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+            
+            // 3. 處理導覽列的顯示與隱藏
             const nav = document.getElementById('global-nav');
-            if (viewName === 'story') nav.classList.add('hidden');
-            else nav.classList.remove('hidden');
-
+            if (nav) {
+                if (viewName === 'story') {
+                    nav.classList.add('hidden'); // 故事頁面隱藏導覽列
+                } else {
+                    nav.classList.remove('hidden'); // 其他頁面（home, map, parent）都顯示
+                }
+            }
+        
+            // 4. 針對不同頁面執行對應的更新渲染
             if (viewName === 'home') renderTasks();
             if (viewName === 'map') updateMapProgress();
         }
@@ -202,11 +216,37 @@
             }
         }
 
-        function updateMapProgress() {
-            const percentage = Math.min((currentEnergy / targetEnergy) * 100, 100);
-            document.getElementById('map-progress').style.width = percentage + '%';
-            document.getElementById('progress-text').innerText = Math.floor(percentage);
+            function updateMapProgress() {
+                const percentage = Math.min((currentEnergy / targetEnergy) * 100, 100);
+                document.getElementById('map-progress').style.width = percentage + '%';
+                document.getElementById('progress-text').innerText = Math.floor(percentage);
+            }
+            function updateMapProgress() {
+        // 設定目標值，例如 200 分可以完全恢復森林
+        const targetEnergy = 200; 
+        
+        // 計算百分比，最高不超過 100%
+        const percentage = Math.min((currentEnergy / targetEnergy) * 100, 100);
+        
+        // 更新進度條寬度
+        const progressBar = document.getElementById('map-progress');
+        if (progressBar) {
+            progressBar.style.width = percentage + '%';
         }
+        
+        // 更新文字顯示
+        const progressText = document.getElementById('progress-text');
+        if (progressText) {
+            progressText.innerText = Math.floor(percentage);
+        }
+        
+        // PM 的小細節：如果進度滿了，改變提示文字
+        const mapHint = document.getElementById('map-hint');
+        if (mapHint && percentage >= 100) {
+            mapHint.innerText = "🌳 森林已恢復生機！你是最棒的守護者！";
+            mapHint.classList.add('text-green-600', 'font-bold');
+        }
+}
     </script>
 </body>
 </html>
