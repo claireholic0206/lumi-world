@@ -2,70 +2,87 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lumi World</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumi World MVP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .bg-layer {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            transition: opacity 2s ease-in-out;
-        }
-        #light-world { opacity: 0; }
-        .restored #light-world { opacity: 1; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        .floating { animation: float 3s ease-in-out infinite; }
+        .view { display: none; } /* 預設所有頁面隱藏 */
+        .view.active { display: block; } /* 只有帶有 active 的頁面才顯示 */
     </style>
 </head>
-<body class="bg-black overflow-hidden m-0 p-0 font-sans">
-    <div id="dark-world" class="bg-layer" style="background-image: url('bg-dark.jpg');"></div>
-    <div id="light-world" class="bg-layer" style="background-image: url('bg-light.jpg');"></div>
-    <div class="fixed top-8 left-0 w-full px-8 z-20">
-        <div class="bg-gray-800/50 rounded-full h-4 w-full overflow-hidden border border-white/20">
-            <div id="progress-bar" class="bg-yellow-400 h-full w-0 transition-all duration-1000 shadow-[0_0_15px_#fbbf24]"></div>
-        </div>
-        <p class="text-white text-center mt-2 text-sm tracking-widest font-bold">世界修復進度</p>
-    </div>
-    <div class="fixed bottom-40 left-1/2 -translate-x-1/2 z-10 w-48 floating">
-        <img src="lumi.png" alt="Lumi" class="w-full">
-        <div class="bg-white/90 p-3 rounded-2xl mt-4 text-gray-800 text-sm font-bold shadow-xl">
-            <p id="lumi-text">守護者，我感覺到能量正在枯竭...</p>
+<body class="bg-slate-100 font-sans">
+
+    <!-- 1. 開場故事頁面 -->
+    <div id="view-story" class="view active">
+        <div class="h-screen flex flex-col items-center justify-center p-8 text-center">
+            <div class="w-48 h-48 bg-gray-300 rounded-full mb-8 flex items-center justify-center">Lumi 圖示</div>
+            <h1 class="text-xl font-bold mb-4">我們的世界失去了光...</h1>
+            <p class="text-gray-600 mb-8">你願意幫助我們，讓森林再次恢復生機嗎？</p>
+            <button onclick="showView('home')" class="bg-gray-800 text-white px-10 py-3 rounded-full">開始冒險！</button>
         </div>
     </div>
-    <div class="fixed bottom-8 left-0 w-full px-6 z-20 flex gap-4 overflow-x-auto pb-4">
-        <button onclick="completeTask(this, 33)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all">
-            <span class="block text-2xl mb-1">🦷</span>
-            <span class="text-xs font-bold">淨化之咒</span>
-        </button>
-        <button onclick="completeTask(this, 33)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all">
-            <span class="block text-2xl mb-1">🧸</span>
-            <span class="text-xs font-bold">重整秩序</span>
-        </button>
-        <button onclick="completeTask(this, 34)" class="shrink-0 bg-white/20 backdrop-blur-md border border-white/40 text-white px-6 py-4 rounded-2xl active:scale-95 transition-all">
-            <span class="block text-2xl mb-1">🥦</span>
-            <span class="text-xs font-bold">能量萃取</span>
-        </button>
+
+    <!-- 2. 孩子首頁 / 今日任務 -->
+    <div id="view-home" class="view">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-green-200 rounded-full"></div>
+                    <div>
+                        <div class="text-xs text-gray-500">小小守護者</div>
+                        <div class="font-bold">Lv.1</div>
+                    </div>
+                </div>
+                <div class="bg-white px-4 py-1 rounded-full shadow-sm flex items-center gap-2">
+                    <span class="text-yellow-500">⭐</span>
+                    <span id="score-display" class="font-bold">0</span>
+                </div>
+            </div>
+
+            <h2 class="font-bold mb-4 text-lg text-gray-700">今日任務</h2>
+            <div id="task-list" class="space-y-4">
+                <!-- 任務會透過 JavaScript 動態產生在這裡 -->
+            </div>
+
+            <!-- 底部導覽列 -->
+            <div class="fixed bottom-0 left-0 w-full bg-white border-t flex justify-around p-4 text-xs text-gray-400">
+                <button onclick="showView('home')" class="text-green-600">任務</button>
+                <button onclick="showView('map')">世界</button>
+                <button>Lumi</button>
+                <button onclick="showView('parent')">家長</button>
+            </div>
+        </div>
     </div>
+
+    <!-- 4. 世界地圖頁面 -->
+    <div id="view-map" class="view">
+        <div class="p-6 text-center">
+            <h2 class="font-bold text-lg mb-8">遺忘森林</h2>
+            <div class="aspect-square bg-green-50 rounded-3xl border-2 border-dashed border-green-200 flex items-center justify-center mb-8">
+                這裡將會是地圖
+            </div>
+            <button onclick="showView('home')" class="text-blue-500 underline">返回任務</button>
+        </div>
+    </div>
+
+    <!-- P1. 家長後台 (簡版) -->
+    <div id="view-parent" class="view">
+        <div class="p-6">
+            <h2 class="font-bold text-lg mb-4 text-purple-700">家長管理後台</h2>
+            <p class="text-sm text-gray-600 mb-8">在這裡你可以查看孩子的進度並管理任務。</p>
+            <button onclick="showView('home')" class="bg-purple-100 text-purple-700 px-4 py-2 rounded-lg">回孩子視角</button>
+        </div>
+    </div>
+
     <script>
-        let currentEnergy = 0;
-        function completeTask(btn, energy) {
-            if (btn.disabled) return;
-            btn.disabled = true;
-            btn.style.opacity = "0.5";
-            if (navigator.vibrate) navigator.vibrate(200);
-            currentEnergy += energy;
-            document.getElementById('progress-bar').style.width = currentEnergy + "%";
-            const texts = ["太棒了！光回來了！", "謝謝你，森林在笑呢！", "黑霧正在散去！"];
-            document.getElementById('lumi-text').innerText = texts[Math.floor(Math.random() * texts.length)];
-            if (currentEnergy >= 100) {
-                document.body.classList.add('restored');
-                document.getElementById('lumi-text').innerText = "世界恢復了！你是最棒的守護者！";
-            }
+        // 核心邏輯：頁面切換
+        function showView(viewName) {
+            // 隱藏所有頁面
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            // 顯示指定頁面
+            document.getElementById('view-' + viewName).classList.add('active');
         }
     </script>
 </body>
